@@ -1,109 +1,85 @@
 # 🛡️ Throttle: Traffic Control & API Defense System
 
-A robust, local demonstration of a traffic-controlled API system
-featuring **Rate Limiting**, **Throttling**, **Queueing**, and
-**Heuristic Abuse Detection**. This project provides a real-time
-monitoring dashboard to visualize traffic patterns and audit suspicious
-activity via persistent file-based logs.
+A high-performance, asynchronous traffic management system for APIs. This project implements advanced rate limiting, throttling, and heuristic-based bot detection to protect your services from abuse while ensuring smooth traffic flow.
 
-------------------------------------------------------------------------
+---
 
-## 🚀 Features
+## 🌟 Key Features
 
--   **Multi-Stage Rate Limiting**: Implements a sliding window algorithm using memory-efficient `deque` structures to prevent API exhaustion.
--   **Security Hardening**: Supports **Proxy-Aware IP detection** via `X-Forwarded-For` and `X-Real-IP` headers with a configurable trusted proxy list.
--   **True Throttling & Queueing**: Uses an asynchronous `Semaphore` and `Queue` system to manage concurrent requests. Excess traffic is actually queued and processed as capacity becomes available.
--   **Heuristic Abuse Detection**: Analyzes request interval variance to distinguish between human users and automated scripts (bots).
--   **Persistent Blocking**: Flagged IPs are automatically blocked from all endpoints until administratively unblocked.
--   **Real-Time Dashboard**: Live visualization of global traffic and queue status using Chart.js.
--   **Admin API & Audit Logs**: Automatically generates physical `.log` files for flagged IPs and provides API endpoints for unblocking and log maintenance.
+### 🚦 Multi-Stage Rate Limiting
+Implements a sliding window algorithm using memory-efficient `deque` structures. It monitors request frequency per IP and global traffic, preventing API exhaustion.
 
-------------------------------------------------------------------------
+### 🛡️ Heuristic Abuse Detection
+Distinguishes between human users and automated scripts (bots) by analyzing request interval variance. Flagged IPs are automatically blocked and logged.
 
-## 🛠️ Admin API
+### ⏳ True Throttling & Queueing
+Unlike simple wrappers, Throttle uses an asynchronous `Semaphore` and `Queue` system. Excess traffic is buffered and processed as capacity becomes available, maintaining system stability under load.
 
-The system provides several administrative endpoints:
-- `POST /api/admin/unblock/{ip}`: Removes an IP from the blocklist.
-- `POST /api/admin/clear-logs`: Wipes all persistent audit logs from the server.
+### 📊 Real-Time Dashboard
+A live visualization suite built with Chart.js to monitor:
+- Global request frequency
+- Current queue depth
+- Blocked IP audit logs
+- Heuristic analysis status
 
-------------------------------------------------------------------------
+---
 
 ## 🛠️ Tech Stack
 
--   **Backend**: Python 3.10+, FastAPI, Uvicorn (Asynchronous Server)
--   **Frontend**: HTML5, CSS3, Vanilla JavaScript (Modern ES6+)
--   **Visualization**: Chart.js
--   **Storage**: In-memory data structures (optimized with `deque`) + Local File System for logging
+- **Backend**: Python 3.11+, FastAPI (Asynchronous framework)
+- **Concurrency**: `asyncio`, `Semaphore`, `Queue`
+- **Frontend**: ES6+ JavaScript, Chart.js, Vanilla CSS
+- **Containerization**: Docker & Docker Compose
+- **Persistence**: File-based audit logs for blocked entity tracking
 
-------------------------------------------------------------------------
+---
 
-## ⚡ Quick Start
+## 🚀 Quick Start
 
-### 1. Installation
-
-Ensure you have Python installed, then install the required
-dependencies:
-
-``` bash
-pip install fastapi uvicorn
-```
-
-### 2. Execution
-
-Run the server from the project root:
-
-``` bash
-python main.py
-```
-
-### 3. Access
-
--   **Client Simulator**: http://localhost:8000/index.html
--   **Monitoring Dashboard**: http://localhost:8000/dashboard.html
-
-------------------------------------------------------------------------
-
-## 🐳 Docker Deployment
-
-For a professional, containerized setup, use Docker Compose:
-
-``` bash
-# Build and start the container
+### Docker (Recommended)
+Launch the entire system in a containerized environment:
+```bash
 docker-compose up --build -d
 ```
+Access the dashboard at `http://localhost:8000/dashboard.html`.
 
-The system will be available at `http://localhost:8000`. Audit logs are persisted to the `./logs` directory on your host machine via volumes.
+### Local Installation
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Run the server:
+   ```bash
+   python main.py
+   ```
 
-------------------------------------------------------------------------
-
-## 📂 Project Structure
-
-``` plaintext
-Throttle/
-├── main.py              # FastAPI Backend with advanced defense logic
-├── logs/                # Persistent audit logs for flagged IPs
-└── static/              # Frontend Web Assets (HTML/CSS/JS)
-```
-
-------------------------------------------------------------------------
+---
 
 ## 🧪 Testing Scenarios
 
--   **Rate Limit Trigger**: Click **"Send Request"** more than 10 times in 5 seconds to trigger a `429 Too Many Requests` status.
--   **Bot Detection**: Toggle **"Spam Mode"**. The system detects high-regularity intervals and issues a permanent 403 block.
--   **Queueing**: When capacity exceeds `MAX_ACTIVE`, requests will wait in the `MAX_QUEUE` buffer before processing.
--   **Audit**: Check the `logs/` folder for human-readable reports of blocked IP activity.
+- **Rate Limiting**: Trigger a `429 Too Many Requests` by exceeding 10 requests in 5 seconds.
+- **Bot Detection**: Enable "Spam Mode" in the client simulator to trigger the heuristic detection.
+- **Queueing**: Observe how requests are queued when `MAX_ACTIVE` capacity is reached.
 
-------------------------------------------------------------------------
+---
+
+## 📂 Project Structure
+
+- `main.py`: The heart of the defense logic and API endpoints.
+- `static/`: Frontend assets for the monitoring suite.
+- `logs/`: Persistent records of all blocked IPs and their activity.
+- `verify_throttle.py`: A CLI tool for automated system validation.
+
+---
 
 ## ⚙️ Configuration
 
-The system parameters can be adjusted at the top of `main.py`:
+Adjust constants in `main.py` to tune the defense parameters:
+- `RATE_LIMIT_MAX`: Requests per window.
+- `MAX_ACTIVE`: Maximum concurrent request processing.
+- `MAX_QUEUE`: Buffer size for pending requests.
+- `ABUSE_VARIANCE_THRESHOLD`: Sensitivity for bot detection.
 
--   `RATE_LIMIT_MAX`: Requests allowed per sliding window.
--   `TRUSTED_PROXIES`: List of IP addresses allowed to provide `X-Forwarded-For` headers.
--   `MAX_ACTIVE`: Maximum global simultaneous processing capacity.
--   `MAX_QUEUE`: Maximum size of the overflow queue before returning 503.
--   `ABUSE_VARIANCE_THRESHOLD`: Sensitivity of the bot-detection algorithm.
+---
 
-This project is intended for educational and portfolio purposes.
+*Educational purpose only. Designed for robustness and demonstration of modern traffic control patterns.*
