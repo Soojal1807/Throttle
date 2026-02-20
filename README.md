@@ -1,4 +1,4 @@
-# 🛡️ Throttle: Traffic Control & API Defense System
+# 🛡️ Throttle:
 
 A high-performance, asynchronous traffic management system for APIs. This project implements advanced rate limiting, throttling, and heuristic-based bot detection to protect your services from abuse while ensuring smooth traffic flow.
 
