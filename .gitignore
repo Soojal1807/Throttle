@@ -1,0 +1,7 @@
+logs/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+node_modules/
+.docker-compose.yml.tmp
