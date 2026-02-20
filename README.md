@@ -80,6 +80,4 @@ Adjust constants in `main.py` to tune the defense parameters:
 - `MAX_QUEUE`: Buffer size for pending requests.
 - `ABUSE_VARIANCE_THRESHOLD`: Sensitivity for bot detection.
 
----
 
-*Educational purpose only. Designed for robustness and demonstration of modern traffic control patterns.*
